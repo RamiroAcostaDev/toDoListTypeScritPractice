@@ -105,13 +105,13 @@ const handleSortList = (event: SelectEvent)=>{
         <Typography variant="h6" color="initial">To Do List</Typography>
       </Box>
 
-      <Box display = {"flex"} justifyContent={'center'} alignItems={'center'}>
-        <form action="" onSubmit={addToolToList}  style={{display:'flex', gap: '10px'}}>
-          <input value={InputChange && InputChange.name} type="text" onChange={handleInputChanges}/>
-          <Box>
-            <button type="submit">Add</button>
-            <button onClick={deleteList}>Delete</button>
-            <select id="sortoptions" onChange={handleSortList}>
+      <Box display = {"flex"} justifyContent={'center'} alignItems={'center'} >
+        <form action="" onSubmit={addToolToList}  style={{display:'flex', gap: '10px', flexDirection:'column'}} >
+          <input value={InputChange && InputChange.name} type="text" onChange={handleInputChanges} style={{border:'1px solid black', borderRadius: '5px', padding: '3px'}}/>
+          <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={3}>
+            <button type="submit" style={{border:'1px solid black', borderRadius: '5px', padding: '3px'}}>Add</button>
+            <button onClick={deleteList} style={{border:'1px solid black', borderRadius: '5px', padding: '3px'}}>Delete all</button>
+            <select id="sortoptions" onChange={handleSortList} style={{border:'1px solid black', borderRadius: '5px', padding: '3px'}}>
               
               <option value="old">Mas antiguas</option>
 
@@ -133,14 +133,14 @@ const handleSortList = (event: SelectEvent)=>{
 
       <Box display = {"flex"}>
         <ul style={{display:'flex', gap: '10px', flexDirection:'column'}}>
-          {toolsList && toolsList.map(({id, name, checked, style, date}, index)=>(
+          {toolsList && toolsList.map(({id, name, checked, style}, index)=>(
           
             
-            <li key={index} style={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
+            <li key={index} style={{display: 'flex', justifyContent:'center', alignItems: 'center', gap: '10px'}}>
               {id && <input type='checkbox' checked={checked} onChange={(event)=>handleCheckedTool(event, id)}/>}
               <p style={style}>{name}</p>
              
-             {id && <button onClick={()=>handleDeleteTool(id)}>Delete</button>}
+             {id && <button onClick={()=>handleDeleteTool(id)} style={{border:'1px solid black', borderRadius: '5px', padding: '3px'}}>Delete</button>}
               </li>
             
           
