@@ -36,7 +36,7 @@ export default function Home() {
     console.log(toolsList)
   }
 
-  const handleDeleteTool = (id:string | undefined)=>{
+  const handleDeleteTool = (id:string )=>{
     
       const newToolsList = toolsList.filter((tool)=> tool.id !== id);
       setToolsList(newToolsList);
@@ -67,7 +67,7 @@ export default function Home() {
             <li key={index}>
               <input type='checkbox' />
               {name}
-              <button onClick={()=>handleDeleteTool(id)}>Delete</button>
+             {id && <button onClick={()=>handleDeleteTool(id)}>Delete</button>}
               </li>
             
           
