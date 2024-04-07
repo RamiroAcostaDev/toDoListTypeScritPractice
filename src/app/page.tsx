@@ -10,12 +10,17 @@ export default function Home() {
     checked?: boolean,
     style?: object,
     date?:number,
-  }
+}
   
-  const [toolsList, setToolsList] = useState<Tool[]>([]);
-  const [InputChange, setInputCange] = useState<Tool>({name:''});
+type FormEvent = React.FormEvent<HTMLFormElement>
+type MouseEvent = React.MouseEvent<HTMLButtonElement>
+type ChangeEvent = React.ChangeEvent<HTMLInputElement>
+type SelectEvent = React.ChangeEvent<HTMLSelectElement>
 
-  const handleInputChanges = (event:any)=>{
+const [toolsList, setToolsList] = useState<Tool[]>([]);
+const [InputChange, setInputCange] = useState<Tool>({name:''});
+
+  const handleInputChanges = (event:ChangeEvent)=>{
     const newTool: Tool ={
       id: Math.random().toString().substring(2,9),
       name: event.target.value,
@@ -25,25 +30,74 @@ export default function Home() {
     };
     setInputCange(newTool)
     console.log(InputChange)
-  };
+};
 
-  const addToolToList=(event:any)=>{
+const addToolToList=(event: FormEvent)=>{
     event.preventDefault();
     
       setToolsList([...toolsList, InputChange]);
       setInputCange({name:''})
    
     console.log(toolsList)
-  }
+}
 
-  const handleDeleteTool = (id:string )=>{
-    
+const handleDeleteTool = (id:string )=>{
       const newToolsList = toolsList.filter((tool)=> tool.id !== id);
       setToolsList(newToolsList);
+}
+  
+const deleteList = ()=>{
+      setToolsList([]);
+}
+
+const handleCheckedTool = (event: ChangeEvent, id : string)=>{
+  const newToolsList = toolsList.map((tool)=>{
+    if (tool.id === id){
+      tool.checked = event.target.checked;
     
-    
+    if(tool.checked === true){
+      tool.style = {textDecoration: 'line-through'}
+    }else{
+      tool.style = {textDecoration: 'none'}
+    }
+  }
+    return tool
+  })
+  setToolsList(newToolsList);
+}
+
+const handleSortList = (event: SelectEvent)=>{
+  const sortValue = event.target.value;
+  if (sortValue === 'recent'){
+    const sortedList = toolsList.sort((a: any,b: any)=> b.date - a.date);
+    setToolsList([...sortedList]);
+  }
+  if (sortValue === 'old'){
+    const sortedList = toolsList.sort((a: any,b: any)=> a.date - b.date);
+    setToolsList([...sortedList]);
+  }
+  if (sortValue === 'AZ'){
+    const sortedList = toolsList.sort((a: any,b: any)=> a.name.localeCompare(b.name));
+    setToolsList([...sortedList]);
+  }
+  if (sortValue === 'ZA'){
+    const sortedList = toolsList.sort((a: any,b: any)=> b.name.localeCompare(a.namek));
+    setToolsList([...sortedList]);
+  }
+  if (sortValue === 'pending'){
+    const sortedList = toolsList.sort((a: any,b: any)=> a.checked - b.checked);
+    setToolsList([...sortedList]);
+  }
+  if (sortValue === 'done'){
+    const sortedList = toolsList.sort((a: any,b: any)=> b.checked - a.checked);
+    setToolsList([...sortedList]);
   }
   
+
+}
+
+
+
   return (
     <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} gap={5}>
       
@@ -54,8 +108,26 @@ export default function Home() {
       <Box display = {"flex"} justifyContent={'center'} alignItems={'center'}>
         <form action="" onSubmit={addToolToList}  style={{display:'flex', gap: '10px'}}>
           <input value={InputChange && InputChange.name} type="text" onChange={handleInputChanges}/>
-          <button type="submit">Add</button>
-          <button >Delete</button>
+          <Box>
+            <button type="submit">Add</button>
+            <button onClick={deleteList}>Delete</button>
+            <select id="sortoptions" onChange={handleSortList}>
+              
+              <option value="old">Mas antiguas</option>
+
+              <option value="recent">Mas recientes</option>
+
+              <option value="AZ">A-Z</option>
+
+              <option value="ZA">Z-A</option>
+
+              <option value="pending">Tareas pendientes</option>
+
+              <option value="done">Tareas completadas</option>
+
+            </select>
+          </Box>
+
         </form>
       </Box>
 
@@ -64,9 +136,10 @@ export default function Home() {
           {toolsList && toolsList.map(({id, name, checked, style, date}, index)=>(
           
             
-            <li key={index}>
-              <input type='checkbox' />
-              {name}
+            <li key={index} style={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
+              {id && <input type='checkbox' checked={checked} onChange={(event)=>handleCheckedTool(event, id)}/>}
+              <p style={style}>{name}</p>
+             
              {id && <button onClick={()=>handleDeleteTool(id)}>Delete</button>}
               </li>
             
