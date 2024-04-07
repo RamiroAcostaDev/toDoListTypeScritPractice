@@ -1,19 +1,19 @@
 "use client"
-import { Box, Typography, Container } from "@mui/material";
+import { Box, Typography} from "@mui/material";
 import {useState} from "react";
 
 export default function Home() {
   //Types
   type Tool = {
-    id: string,
+    id?: string ,
     name: string,
-    checked: boolean,
-    style: object,
-    date:number,
+    checked?: boolean,
+    style?: object,
+    date?:number,
   }
   
   const [toolsList, setToolsList] = useState<Tool[]>([]);
-  const [InputCange, setInputCange] = useState<Tool | null>(null);
+  const [InputChange, setInputCange] = useState<Tool>({name:''});
 
   const handleInputChanges = (event:any)=>{
     const newTool: Tool ={
@@ -24,15 +24,24 @@ export default function Home() {
       date: Date.now()
     };
     setInputCange(newTool)
-    console.log(InputCange)
+    console.log(InputChange)
   };
 
   const addToolToList=(event:any)=>{
     event.preventDefault();
-    if (InputCange !== null) {
-      setToolsList([...toolsList, InputCange]);
-    }
+    
+      setToolsList([...toolsList, InputChange]);
+      setInputCange({name:''})
+   
     console.log(toolsList)
+  }
+
+  const handleDeleteTool = (id:string | undefined)=>{
+    
+      const newToolsList = toolsList.filter((tool)=> tool.id !== id);
+      setToolsList(newToolsList);
+    
+    
   }
   
   return (
@@ -44,18 +53,27 @@ export default function Home() {
 
       <Box display = {"flex"} justifyContent={'center'} alignItems={'center'}>
         <form action="" onSubmit={addToolToList}  style={{display:'flex', gap: '10px'}}>
-          <input type="text" onChange={handleInputChanges}/>
+          <input value={InputChange && InputChange.name} type="text" onChange={handleInputChanges}/>
           <button type="submit">Add</button>
           <button >Delete</button>
         </form>
       </Box>
 
       <Box display = {"flex"}>
-        <ul style={{display:'flex', gap: '10px'}}>
-          <input type='checkbox' />
-          <li>Hola como estas</li>
-          <button>Delete</button>
+        <ul style={{display:'flex', gap: '10px', flexDirection:'column'}}>
+          {toolsList && toolsList.map(({id, name, checked, style, date}, index)=>(
+          
+            
+            <li key={index}>
+              <input type='checkbox' />
+              {name}
+              <button onClick={()=>handleDeleteTool(id)}>Delete</button>
+              </li>
+            
+          
+          ))}
         </ul>
+          
       </Box>
 
     </Box>
