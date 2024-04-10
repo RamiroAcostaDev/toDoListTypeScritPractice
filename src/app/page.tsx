@@ -5,11 +5,20 @@ import {useState} from "react";
 export default function Home() {
   //Types
   type Tool = {
-    id?: string ,
+    id: string ,
     name: string,
-    checked?: boolean,
-    style?: object,
-    date?:number,
+    checked: boolean,
+    style: object,
+    date:number,
+}
+
+const ObjBase ={
+  id: '',
+  name: '',
+  checked: false,
+  style: {textDecoration: 'none'},
+  date: Date.now()
+
 }
   
 type FormEvent = React.FormEvent<HTMLFormElement>
@@ -18,7 +27,7 @@ type ChangeEvent = React.ChangeEvent<HTMLInputElement>
 type SelectEvent = React.ChangeEvent<HTMLSelectElement>
 
 const [toolsList, setToolsList] = useState<Tool[]>([]);
-const [InputChange, setInputCange] = useState<Tool>({name:''});
+const [InputChange, setInputCange] = useState<Tool>(ObjBase);
 
   const handleInputChanges = (event:ChangeEvent)=>{
     const newTool: Tool ={
@@ -36,7 +45,7 @@ const addToolToList=(event: FormEvent)=>{
     event.preventDefault();
     
       setToolsList([...toolsList, InputChange]);
-      setInputCange({name:''})
+      setInputCange(ObjBase)
    
     console.log(toolsList)
 }
