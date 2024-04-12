@@ -3,14 +3,13 @@ import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 
 const Home = () => {
-  //Types
-  type Tool = {
+  interface Tool {
     id: string;
     name: string;
     checked: boolean;
     style: object;
     date: number;
-  };
+  }
 
   const defaultInputTool = {
     id: "",
@@ -20,10 +19,10 @@ const Home = () => {
     date: Date.now(),
   };
 
-  type FormEvent = React.FormEvent<HTMLFormElement>;
-  type MouseEvent = React.MouseEvent<HTMLButtonElement>;
-  type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
-  type SelectEvent = React.ChangeEvent<HTMLSelectElement>;
+  interface FormEvent extends React.FormEvent<HTMLFormElement> {}
+  interface MouseEvent extends React.MouseEvent<HTMLButtonElement> {}
+  interface ChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
+  interface SelectEvent extends React.ChangeEvent<HTMLSelectElement> {}
 
   const [toolsList, setToolsList] = useState<Tool[]>([]);
   const [InputChange, setInputChange] = useState<Tool>(defaultInputTool);
@@ -54,8 +53,9 @@ const Home = () => {
     setToolsList(newToolsList);
   };
 
-  const deleteList = () => {
-    setToolsList([]); // solucionar problema de render
+  const deleteList = (event: MouseEvent) => {
+    event.preventDefault();
+    setToolsList([]);
   };
 
   const handleCheckedTool = (event: ChangeEvent, id: string) => {
@@ -91,76 +91,20 @@ const Home = () => {
         sortedList = toolsList.sort((a: Tool, b: Tool) =>
           b.name.localeCompare(a.name)
         );
-
-        // ver como sortear la prop checked
-        // } else if (type === "pending") {
-        //   toolsList.sort((a: Tool, b: Tool) => parseInt(a.checked) - parseInt(b.checked);
-        // } else if (type === "done") {
-        //   toolsList.sort((a: Tool, b: Tool) => b.checked - a.checked);
-        // }
+      } else if (type === "pending") {
+        toolsList.sort(
+          (a: Tool, b: Tool) => Number(a.checked) - Number(b.checked)
+        );
+      } else if (type === "done") {
+        toolsList.sort(
+          (a: Tool, b: Tool) => Number(b.checked) - Number(a.checked)
+        );
       }
+
       return sortedList;
     };
     setToolsList([...sortByType(sortValue)]);
   };
-  //   switch (sortValue) {
-  //     case "recent":
-  //       setToolsList([...sortByType()]);
-  //     case "old":
-  //       setToolsList([...sortByType()]);
-  //     case "AZ":
-  //       sortedList = toolsList.sort((a: any, b: any) =>
-  //         a.name.localeCompare(b.name)
-  //       );
-  //       setToolsList([...sortedList]);
-  //     case "ZA":
-  //       sortedList = toolsList.sort((a: any, b: any) =>
-  //         b.name.localeCompare(a.namek)
-  //       );
-  //       setToolsList([...sortedList]);
-  //     case "pending":
-  //       sortedList = toolsList.sort((a: any, b: any) => a.checked - b.checked);
-  //       setToolsList([...sortedList]);
-  //     case "done":
-  //       sortedList = toolsList.sort((a: any, b: any) => b.checked - a.checked);
-  //       setToolsList([...sortedList]);
-  //       break;
-  //   }
-  // };
-
-  //   if (sortValue === "recent") {
-  //     const sortedList = toolsList.sort((a: Tool, b: Tool) => b.date - a.date);
-  //     setToolsList([...sortedList]);
-  //   }
-  //   if (sortValue === "old") {
-  //     const sortedList = toolsList.sort((a: any, b: any) => a.date - b.date);
-  //     setToolsList([...sortedList]);
-  //   }
-  //   if (sortValue === "AZ") {
-  //     const sortedList = toolsList.sort((a: any, b: any) =>
-  //       a.name.localeCompare(b.name)
-  //     );
-  //     setToolsList([...sortedList]);
-  //   }
-  //   if (sortValue === "ZA") {
-  //     const sortedList = toolsList.sort((a: any, b: any) =>
-  //       b.name.localeCompare(a.namek)
-  //     );
-  //     setToolsList([...sortedList]);
-  //   }
-  //   if (sortValue === "pending") {
-  //     const sortedList = toolsList.sort(
-  //       (a: any, b: any) => a.checked - b.checked
-  //     );
-  //     setToolsList([...sortedList]);
-  //   }
-  //   if (sortValue === "done") {
-  //     const sortedList = toolsList.sort(
-  //       (a: any, b: any) => b.checked - a.checked
-  //     );
-  //     setToolsList([...sortedList]);
-  //   }
-  // };
 
   return (
     <Box
@@ -245,10 +189,10 @@ const Home = () => {
 
       <Box display={"flex"}>
         <ul style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-          {toolsList &&
-            toolsList.map(({ id, name, checked, style }, index) => (
+          {toolsList.length > 0 &&
+            toolsList.map(({ id, name, checked, style }) => (
               <li
-                key={index}
+                key={id}
                 style={{
                   display: "flex",
                   justifyContent: "center",
